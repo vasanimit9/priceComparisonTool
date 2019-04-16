@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="./search" method="GET" class="md-form row">
+	<!--<div class="card">-->
+		<div class="col-md-8">
+			<input type="text" class="form-control" name="s" id="product" placeholder="Enter a product name"
+			{% if sstring %} value="{{sstring}}" {% endif %}>
+			<!-- <label for="product">Search product name</label> -->
+		</div>
+		<div class="col-md-4 text-center">
+			<button type="submit" class="btn btn-success">Search</button>
+		</div>
+	<!--</div>-->
+</form>
+
+<div class="row">
+	<div class="col-md-3">
+		<div class="row">
+		<ul style='list-style-type: none;'>
+			{% for i in categories %}
+			<li><a href='/search?s={{i["name"]}}' class="btn btn-default">{{i["name"]}}</a></li>
+			{% endfor %}
+		</ul>
+		</div>
+	</div>
+	<div class="col-md-9">
+		{% if output %}
+		<!--<div class=row>-->
+			{% for i in output %}
+			<div class="row">
+				<div class='card col-md-3' class="img-div">
+					<img id='{{ "".join(i["name"].split()) }}' src='{{ i["image"] }}' class="align-middle" style="display: inline-block; width:100%;max-height:200px;"><br>
+				</div>
+				<div class="col-1"></div>
+				<div class="card col-md-8" style="padding-top: 50px; ">
+					<table style="border-width: 0;">
+					{{i["name"]}}
+					<a href='{{i["link"]}}'>View on {{ i["source"] }}
+					</a><br>
+					<p>&#8377;{{ i["price"] }}</p>
+					</table>
+					{% if user %}
+					<button onclick="getNotified('{{i['name']}}','{{i['link']}}', '{{i['source']}}')" class="btn btn-info">
+						Get Notifications About This Product
+					</button>
+					{% endif %}
+				</div>
+			</div> &nbsp;
+			<br>
+			{% endfor %}
+		<!-- </div> -->
+		<script>
+		function h(id) {
+			var high = $("#" + id).height();
+			var margin = 150 - high/2;
+			$("#"+id).css("margin-top", margin);
+		}
+		function getNotified(name, link, source) {
+			var t = prompt("At what time would you like to be notified everyday? (Answer in time of the day (anything from 0000 to 2359))", 1200);
+			if(parseInt(t)>=0 && parseInt(t)<=2359) {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if(this.readyState == 4 && this.status == 200) {
+						alert(this.responseText);
+					}
+				};
+				xhttp.open("POST", "/subscribe", true);
+				xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xhttp.send("name=" + name + "&link=" + link + "&source=" + source + "&time=" + t);
+			}
+		}
+		</script>
+		{% endif %}
+	</div>
+</div>
+<style> 
+@media screen and (min-width: 576px) {
+	.img-div {
+		height: 250px;
+	}
+}
+</style>
+{% endblock %}

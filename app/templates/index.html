@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="index">
+
+<!-- <h1>Price Comparison Tool</h1> -->
+
+</div>
+
+<h1 style="font-size: 48px;" class="text-center">Price Comparison Tool </h1>
+
+<form action="./search" method="GET" class="md-form row">
+	<div class="col-md-8">
+		<input type="text" class="form-control" name="s" id="product" placeholder="Enter a product name"
+		{% if sstring %} value="{{sstring}}" {% endif %}>
+		<!--<label for="product">Search product name</label>-->
+	</div>
+	<div class="col-md-4 text-center">
+		<button type="submit" class="btn btn-success">Search</button>
+	</div>
+</form>
+
+
+{% for i in categories %}
+
+<a href="/search?s={{i['name']}}" class="btn btn-default">{{ i['name'] }}</a>
+
+{% endfor %}
+
+<script>
+$("#index").height(eval(window.innerHeight)*0.25);
+</script>
+
+{% endblock %}

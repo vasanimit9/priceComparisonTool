@@ -1,0 +1,5 @@
+database.json
+credentials.py
+venv
+__pycache__
+app/__pycache__

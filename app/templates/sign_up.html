@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br><br>
+<div class="row">
+    <div class="col-md-4"><br></div>
+    <div class="col-md-4">
+        <br>&nbsp;<br>&nbsp;
+        <h2>Sign up</h2>
+        <span class="text-danger">
+            {% if msgs %}
+                {{ msgs }}
+            {% endif %}
+        </span>
+        <form class="md-form" onsubmit="return validate()" action="./register" id="signup" method="POST">
+            <!-- <input type="text" class="form-control" placeholder="Username" name="username" required> -->
+            <input type="email" class="form-control" placeholder="Email" name="email" id="e1" required>
+            <input type="email" class="form-control" placeholder="Confirm email" id="e2" required>
+            <button type="submit" class="btn btn-warning" style="float:right;">Sign Up</button>
+        </form>
+    </div>
+</div>
+
+<script>
+
+function validate() {
+    if($("#e1").val() == $("#e2").val()) {
+        return true;
+    }
+
+    $(".text-danger").html($(".text-danger").html() + "Emails do not match");
+    return false;
+}
+
+</script>
+{% endblock %}

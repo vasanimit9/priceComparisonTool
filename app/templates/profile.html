@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br>
+<br>
+<div class="row">
+<div class="col-md-1"></div>
+<div class="col-md-4">
+<table style="border-width: 0">
+	<tr>
+		<td>Change password:</td>
+		<td><a href='./forgot_password' class="btn btn-info">Change</a></td>
+</tr>
+</table>
+</div>
+</div>
+<br>
+<h2> Subscription list </h2>
+{% if output %}
+<table class="table table-striped table-responsive">
+	<tr>
+		<th>Name</th>
+		<th>Time</th>
+		<th>Source</th>
+		<th></th>
+	</tr>
+{% for i in output %}
+	<tr>
+		<td>{{ i["name"] }}</td>
+		<td>{{ i["time"] }}</td>
+		<td>{{ i["source"] }}
+		<td><button type = "button" class="btn btn-default" onclick="unsubscribe('{{i['link']}}',  '{{i['time']}}')">Unsubscribe</button></td>
+	</tr>
+{% endfor %}
+</table>
+{% else %}
+No subscriptions yet
+{% endif %}
+
+<script type="text/javascript">
+	function unsubscribe(link, time) {
+		xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				window.location = this.responseText;
+			}
+		};
+		xhttp.open("POST", "/unsubscribe", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send('link=' + link + '&time=' + time);
+	}
+</script>
+
+{% endblock %}
