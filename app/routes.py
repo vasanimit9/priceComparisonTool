@@ -102,7 +102,7 @@ def logout():
 def change_password():
 	email = request.args.get('email')
 	email = "@".join(email.split("%40"))
-	password_hash = int(request.args.get('h'))
+	password_hash = request.args.get('h')
 	if db.contains((where('email') == email) & (where('password_hash') == password_hash)):
 		if 'email' in session:
 			return render_template('change_password.html', title='Change Password',
