@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 # from selenium.webdriver.chrome.options import Options
 import html2text
+import threading
 
 	
 class scraper(object):
@@ -83,14 +84,14 @@ class scraper(object):
 
 		names = self.browser.find_elements_by_css_selector(".s-result-item h5 a span")
 		links = self.browser.find_elements_by_css_selector(".s-result-item h5 a")
-		prices = self.browser.find_elements_by_css_selector(".s-result-item .a-price .a-price-whole")
+		prices = self.browser.find_elements_by_xpath('//span[@class="a-price"][@data-a-size="l"]/span[@class="a-offscreen"]')
 		images = self.browser.find_elements_by_css_selector(".s-result-item img")
 
 		amazon = []
 		for i in range(10):
 			amazon.append({
 						"name": names[i].get_attribute("innerHTML"),
-						"price": float(html2text.html2text(''.join(prices[i].get_attribute("innerHTML").split(',')))),
+						"price": float(html2text.html2text(''.join(prices[i].get_attribute("innerHTML").split(',')))[1:]),
 						"link": links[i].get_attribute('href'),
 						"image": images[i].get_attribute('src'),
 						"source": "Amazon.in"})

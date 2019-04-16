@@ -20,6 +20,7 @@ app.secret_key = secret_key
 def background_jobs():
 	mailer2 = Mailer(login_, password_)
 	while True:
+		db = TinyDB('database.json')
 		print("background_jobs")
 		tz = pytz.timezone('Asia/Kolkata')
 		kolkata_now = datetime.now(tz)
@@ -27,6 +28,7 @@ def background_jobs():
 		print(t)
 		for i in db.search(where('type') == 'notification'):
 			if 0 <= t - i['time'] < 10:
+				print(i)
 				print('Sending notifications')
 				output = extractPrice(i['source'], i['link'])
 				print('Initializing mailer')
