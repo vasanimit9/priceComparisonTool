@@ -3,6 +3,7 @@ import re
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 # from selenium.webdriver.chrome.options import Options
+from flask import escape
 import html2text
 
 def find(s):
@@ -69,7 +70,7 @@ class scraper(object):
 		for i in range(5):
 			if(img[i]!="None"):
 				flipkart.append({
-						"name": names[i].text,
+						"name": escape(names[i].text),
 						"price": float(html2text.html2text(''.join(price[i].split(',')))),
 						"link": links[i].get_attribute('href'),
 						"image": img[i],
@@ -92,7 +93,7 @@ class scraper(object):
 		amazon = []
 		for i in range(10):
 			amazon.append({
-						"name": names[i].get_attribute("innerHTML"),
+						"name": escape(names[i].get_attribute("innerHTML")),
 						"price": float(html2text.html2text(''.join(prices[i].get_attribute("innerHTML").split(',')))),
 						"link": links[i].get_attribute('href'),
 						"image": images[i].get_attribute('src'),
@@ -118,7 +119,7 @@ class scraper(object):
 		for i in range(10):
 			try:
 				paytmMall.append({
-						"name": items[i].get_attribute("innerHTML"),
+						"name": escape(items[i].get_attribute("innerHTML")),
 						"price": float(html2text.html2text(''.join(prices[i].text.split(',')))),
 						"link": links[i].find_element_by_tag_name('a').get_attribute('href'),
 						"image": images[i].find_element_by_tag_name('img').get_attribute('src'),
@@ -143,7 +144,7 @@ class scraper(object):
 		for i in range(8):
 			try:
 				snapdeal.append({
-						"name": items[i].get_attribute("title"),
+						"name": escape(items[i].get_attribute("title")),
 						"price": float(html2text.html2text(''.join(prices[i].get_attribute("display-price").split(',')))),
 						"link": links[2*i].get_attribute('href'),
 						"image": images[2*i + 1].get_attribute('src'),

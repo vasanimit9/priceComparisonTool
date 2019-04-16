@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, escape
 from app import app
 from tinydb import TinyDB, where
 from scrapers import scraper
@@ -117,7 +117,7 @@ def change_password():
 def change():
 	email = request.args.get('email')
 	email = "@".join(email.split("%40"))
-	password_hash = int(request.args.get('h'))
+	password_hash = request.args.get('h')
 	new_password_hash = secure_hash(request.form.get('password'))
 	db.update({"password_hash": new_password_hash}, 
 		(where('email') == email) & (where('password_hash') == password_hash))
@@ -193,3 +193,8 @@ def categories():
 	else:
 		return render_template('categories.html', title = "categories", categories = cats,
 		 msgs = request.args.get('msgs'))
+
+@app.route('/start_recording', methods = ['get', 'post'])
+def start_recording():
+	product_name = request.form.get('name')
+	product_link = request.form.get('link')
