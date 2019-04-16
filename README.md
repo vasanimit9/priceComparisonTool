@@ -5,7 +5,7 @@
 If you don't have the <code>virualenv</code> python package, you can install it by
 
 ```zsh
-pip install virutalenv --user
+pip install virtualenv --user
 ```
 
 If you the package installed, go to the root folder of the app, and run the following commands on bash
