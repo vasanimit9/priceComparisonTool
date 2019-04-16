@@ -1,5 +1,6 @@
 database.json
 credentials.py
+geckodriver.log
 venv
 __pycache__
 app/__pycache__
