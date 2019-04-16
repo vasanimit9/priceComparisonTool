@@ -19,8 +19,10 @@ def secure_hash(string):
 def index():
 	if 'email' in session:
 		print("Current user:", session['email'])
-		return render_template('index.html', title='Home', msgs=request.args.get('msgs'), categories = cats, user = session['email'])
-	return render_template('index.html', title='Home', categories = cats, msgs=request.args.get('msgs'))
+		return render_template('index.html', title='Home', msgs=request.args.get('msgs'),
+		 categories = cats, user = session['email'])
+	return render_template('index.html', title='Home', categories = cats,
+	 msgs=request.args.get('msgs'))
 
 @app.route('/search', methods = ['get', 'post'])
 def search():
@@ -30,7 +32,8 @@ def search():
 		scrap = scraper(s)
 		if 'email' in session:
 			return render_template('search.html', title = s, output=scrap.products, 
-				sstring = s, msgs = request.args.get('msgs'), categories = cats, user = session['email'])
+				sstring = s, msgs = request.args.get('msgs'), categories = cats,
+				 user = session['email'])
 		else:
 			return render_template('search.html', title = s, output=scrap.products, 
 				sstring = s, msgs = request.args.get('msgs'), categories = cats)
@@ -40,7 +43,8 @@ def search():
 @app.route('/sign_up', methods = ['get', 'post'])
 def sign_up():
 	if not 'email' in session:
-		return render_template("sign_up.html", title="Sign Up", msgs = request.args.get('msgs'))
+		return render_template("sign_up.html", title="Sign Up",
+		 msgs = request.args.get('msgs'))
 	else:
 		return redirect('/index')
 
@@ -50,7 +54,8 @@ def register():
 	email = request.form.get('email')
 	if email != None and not db.contains(where('email')==email):
 		temp_password = str(random.random()*1000000)
-		db.insert({"type": "user", "email": email, "password_hash": secure_hash(temp_password)})
+		db.insert({"type": "user", "email": email,
+		 "password_hash": secure_hash(temp_password)})
 		mailer1.sendRegistrationMail(email, temp_password)
 	else:
 		return redirect('/sign_up?msgs=Email already taken')
@@ -79,6 +84,7 @@ def validate_login():
 		if records[0]['password_hash'] == password_hash:
 			session["email"] = email
 			session["password_hash"] = password_hash
+			print('%s logged in'%email)
 			return redirect('index')
 		else:
 			return redirect('login?msgs=Invalid password')
@@ -88,7 +94,7 @@ def validate_login():
 @app.route('/logout')
 def logout():
 	if 'email' in session:
-		print('%s logged output'%session['email'])
+		print('%s logged out'%session['email'])
 		session.pop('email')
 	return redirect('/index')
 
@@ -143,9 +149,11 @@ def subscribe():
 			source = request.form.get('source')
 			t = int(request.form.get('time'))
 			name = request.form.get('name')
-			if db.contains((where('name') == name) & (where('email') == session['email']) & (where('link') == link) & (where('time') == t)):
+			if db.contains((where('name') == name) & (where('email') == session['email'])
+			 & (where('link') == link) & (where('time') == t)):
 				return 'Notification already set before'
-			if db.insert({"type":"notification", "name": name ,"email": session['email'], "link": link, "source": source, "time": t}):
+			if db.insert({"type":"notification", "name": name ,"email": session['email'],
+			 "link": link, "source": source, "time": t}):
 				return 'Notification set'
 			else:
 				return 'Some error occurred'
@@ -157,8 +165,10 @@ def subscribe():
 @app.route('/profile')
 def profile():
 	if 'email' in session:
-		output = db.search((where('type') == 'notification') & (where('email') == session['email']))
-		return render_template('profile.html', title = 'Profile', output = output, user = session['email'], msgs = request.args.get('msgs'))
+		output = db.search((where('type') == 'notification') & 
+			(where('email') == session['email']))
+		return render_template('profile.html', title = 'Profile', output = output,
+		 user = session['email'], msgs = request.args.get('msgs'))
 	else:
 		return redirect('/index');
 
@@ -178,6 +188,8 @@ def unsubscribe():
 @app.route('/categories', methods = ['get'])
 def categories():
 	if 'email' in session:
-		return render_template('categories.html', title = "categories", categories = cats, msgs = request.args.get('msgs'), user = session['email'])
+		return render_template('categories.html', title = "categories", categories = cats,
+		 msgs = request.args.get('msgs'), user = session['email'])
 	else:
-		return render_template('categories.html', title = "categories", categories = cats, msgs = request.args.get('msgs'),)
+		return render_template('categories.html', title = "categories", categories = cats,
+		 msgs = request.args.get('msgs'))

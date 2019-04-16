@@ -1,7 +1,7 @@
 # Price Compaison Tool
 ## For Software Engineering Project
 
-### Setting Up Virtual environment
+### Setting Up The Virtual Environment
 If you don't have the <code>virualenv</code> python package, you can install it by
 
 ```zsh
