@@ -10,6 +10,7 @@ from category import categories as cats
 import hashlib
 
 db = TinyDB('database.json')
+initial_time = db.search(where('initial_time'))[0]['initial_time']
 mailer1 = Mailer(login_, password_)
 def secure_hash(string):
 	return hashlib.sha512(string.encode()).hexdigest()
@@ -57,6 +58,7 @@ def register():
 		db.insert({"type": "user", "email": email,
 		 "password_hash": secure_hash(temp_password)})
 		mailer1.sendRegistrationMail(email, temp_password)
+		return redirect('/sign_up?msgs=Check email for password')
 	else:
 		return redirect('/sign_up?msgs=Email already taken')
 	return redirect('/index')
@@ -158,7 +160,7 @@ def subscribe():
 			else:
 				return 'Some error occurred'
 		else:
-			return 'Some error occurred'
+			return 'You must login to subscribe to notifications'
 	except:
 		return 'Some error occurred'
 
@@ -198,3 +200,4 @@ def categories():
 def start_recording():
 	product_name = request.form.get('name')
 	product_link = request.form.get('link')
+

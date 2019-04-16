@@ -3,22 +3,8 @@ import re
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 # from selenium.webdriver.chrome.options import Options
-from flask import escape
 import html2text
 
-def find(s):
-	url=s;
-	options = Options()
-	options.headless = True
-	browser=webdriver.Firefox(options=options);
-	print('Searching URL:', url)
-	browser.get(url);
-	t=browser.find_elements_by_css_selector("._1Nyybr.Yun65Y._30XEf0");
-	if(len(t)==0):
-		t=browser.find_elements_by_css_selector("._3togXc._3wp706");
-	if(len(t)==0):
-		return "None"
-	return t[0].get_attribute("src");
 	
 class scraper(object):
 	def __init__(self, productName):
@@ -41,40 +27,50 @@ class scraper(object):
 
 		print("Searching URL:", self.flipkartURL)
 		self.browser.get(self.flipkartURL)
-
+		flag=0
 		names = self.browser.find_elements_by_css_selector("._3wU53n")
 		links = self.browser.find_elements_by_css_selector("._31qSD5")
 		prices = self.browser.find_elements_by_css_selector("._2rQ-NK")
-		
+		images= self.browser.find_elements_by_css_selector("._1Nyybr._30XEf0")
 		if(len(names)==0):
 			names = self.browser.find_elements_by_css_selector("._3liAhj ._2cLu-l")
 			links = self.browser.find_elements_by_css_selector("._3liAhj .Zhf2z-")
 			prices = self.browser.find_elements_by_css_selector("._3liAhj ._1vC4OE")
-		
+			images= self.browser.find_elements_by_css_selector("._1Nyybr._30XEf0")
+			flag=1
+
 		if(len(names)==0):
 			names = self.browser.find_elements_by_css_selector("._2mylT6")
 			links = self.browser.find_elements_by_css_selector("._3dqZjq")
 			prices = self.browser.find_elements_by_css_selector("._3O0U0u ._1vC4OE")
-		
-		img=[];
+			images=self.browser.find_elements_by_css_selector("._3togXc")
+			flag=0
 		price=[];
 		
-		for i in range(5):
+		for i in range(len(prices)):
 			price.append(prices[i].text)
 			price[i]=price[i][1:]
 			#print(price[i]);
-			img_src=find(links[i].get_attribute("href"));
-			img.append(img_src);
+			#img_src=find(links[i].get_attribute("href"));
+			#img.append(img_src);
 			
 		flipkart=[];
-		for i in range(5):
-			if(img[i]!="None"):
+		for i in range(min(10,len(images))):
+			if(flag==0):
 				flipkart.append({
-						"name": escape(names[i].text),
+						"name": names[i].text,
 						"price": float(html2text.html2text(''.join(price[i].split(',')))),
 						"link": links[i].get_attribute('href'),
-						"image": img[i],
+						"image": images[i].get_attribute("src"),
 						"source": "Flipkart"})
+			elif(flag==1):
+				flipkart.append({
+						"name": names[i].get_attribute("title"),
+						"price": float(html2text.html2text(''.join(price[i].split(',')))),
+						"link": links[i].get_attribute('href'),
+						"image": images[i].get_attribute("src"),
+						"source": "Flipkart"})
+				
 			
 		return flipkart
 
@@ -87,13 +83,13 @@ class scraper(object):
 
 		names = self.browser.find_elements_by_css_selector(".s-result-item h5 a span")
 		links = self.browser.find_elements_by_css_selector(".s-result-item h5 a")
-		prices = self.browser.find_elements_by_css_selector(".s-result-item .a-price-whole")
+		prices = self.browser.find_elements_by_css_selector(".s-result-item .a-price .a-price-whole")
 		images = self.browser.find_elements_by_css_selector(".s-result-item img")
 
 		amazon = []
 		for i in range(10):
 			amazon.append({
-						"name": escape(names[i].get_attribute("innerHTML")),
+						"name": names[i].get_attribute("innerHTML"),
 						"price": float(html2text.html2text(''.join(prices[i].get_attribute("innerHTML").split(',')))),
 						"link": links[i].get_attribute('href'),
 						"image": images[i].get_attribute('src'),
@@ -119,7 +115,7 @@ class scraper(object):
 		for i in range(10):
 			try:
 				paytmMall.append({
-						"name": escape(items[i].get_attribute("innerHTML")),
+						"name": items[i].get_attribute("innerHTML"),
 						"price": float(html2text.html2text(''.join(prices[i].text.split(',')))),
 						"link": links[i].find_element_by_tag_name('a').get_attribute('href'),
 						"image": images[i].find_element_by_tag_name('img').get_attribute('src'),
@@ -144,7 +140,7 @@ class scraper(object):
 		for i in range(8):
 			try:
 				snapdeal.append({
-						"name": escape(items[i].get_attribute("title")),
+						"name": items[i].get_attribute("title"),
 						"price": float(html2text.html2text(''.join(prices[i].get_attribute("display-price").split(',')))),
 						"link": links[2*i].get_attribute('href'),
 						"image": images[2*i + 1].get_attribute('src'),

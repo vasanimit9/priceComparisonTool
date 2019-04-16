@@ -40,11 +40,9 @@
 					</a><br>
 					<p>&#8377;{{ i["price"] }}</p>
 					</table>
-					{% if user %}
-					<button onclick="getNotified('{{i['name']}}','{{i['link']}}', '{{i['source']}}')" class="btn btn-info">
+					<button onclick="getNotified('{{i['name']}}',encodeURI('{{i['link']}}'), '{{i['source']}}')" class="btn btn-info">
 						Get Notifications About This Product
 					</button>
-					{% endif %}
 				</div>
 			</div> &nbsp;
 			<br>

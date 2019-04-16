@@ -7,8 +7,12 @@ from scrapers import extractPrice
 from mailer import Mailer
 from credentials import login_, password_, secret_key
 import threading
+import calendar
 
 db = TinyDB('database.json')
+if not db.contains(where('initial_time')):
+	start_secs = calendar.timegm(time.gmtime())
+	db.insert({'initial_time': start_secs})
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -25,8 +29,9 @@ def background_jobs():
 			if 0 <= t - i['time'] < 10:
 				print('Sending notifications')
 				output = extractPrice(i['source'], i['link'])
+				print('Initializing mailer')
 				mailer2.sendMail(i['email'], "Notification",
-				 '''<h3><a href="%s">%s</a></h3><br>The price at this moment is %s'''%(i['link'],i['name'], str(output)))
+				 '''<h3><a href="%s">%s</a></h3><br>The price at this moment is &#8377;%s'''%(i['link'],i['name'], str(output)))
 		time.sleep(600)
 
 def background_jobs2():
