@@ -10,9 +10,15 @@ import threading
 import calendar
 
 db = TinyDB('database.json')
-if not db.contains(where('initial_time')):
+db2 = TinyDB('history.json')
+initial_time = 0
+if not db2.contains(where('initial_time')):
 	start_secs = calendar.timegm(time.gmtime())
-	db.insert({'initial_time': start_secs})
+	db2.insert({'initial_time': start_secs})
+	initial_time = start_secs
+else:
+	initial_time = db2.search(where('initial_time'))[0]['initial_time']
+
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -38,11 +44,20 @@ def background_jobs():
 
 def background_jobs2():
 	while True:
-
-		time.sleep(60)
+		print("background_jobs2")
+		db1 = TinyDB('currently_recording.json')
+		db2 = TinyDB('history.json')
+		products = db1.all()
+		current_time = calendar.timegm(time.gmtime())
+		time_diff = current_time - initial_time
+		for i in products:
+			price = extractPrice(i['source'], i['link'])
+			db2.insert({"name": i["name"], "source": i["source"], "link": i["link"], "price": price, "time": time_diff})
+		time.sleep(3600)
 
 t1 = threading.Thread(target = background_jobs)
 t1.start()
+t2 = threading.Thread(target = background_jobs2)
+t2.start()
 
 from app import routes
-

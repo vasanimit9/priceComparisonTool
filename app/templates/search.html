@@ -40,14 +40,37 @@
 					</a><br>
 					<p>&#8377;{{ i["price"] }}</p>
 					</table>
-					<button onclick="getNotified('{{i['name']}}',encodeURI('{{i['link']}}'), '{{i['source']}}')" class="btn btn-info">
+					<button onclick="getNotified(JSON.stringify('{{i['name']}}'),encodeURI('{{i['link']}}'), '{{i['source']}}')" class="btn btn-info">
 						Get Notifications About This Product
 					</button>
+					<button onclick="viewGraph('{{i['name']}}','{{i['link']}}', '{{i['source']}}')" class="btn btn-warning">View Price Graph</button>
 				</div>
 			</div> &nbsp;
 			<br>
 			{% endfor %}
 		<!-- </div> -->
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#basicExampleModal" id="launchModal" hidden>Launch demo modal</button>
+		<!-- Modal -->
+		<div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		  aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Price Graph &amp; Predictions</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body" id="graph" class="text-center">
+		        ...
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
 		<script>
 		function h(id) {
 			var high = $("#" + id).height();
@@ -67,6 +90,24 @@
 				xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				xhttp.send("name=" + name + "&link=" + link + "&source=" + source + "&time=" + t);
 			}
+		}
+		function viewGraph(name, link, source) {
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if(this.readyState == 4 && this.status == 200) {
+					if(this.responseText[0] != "<") {
+						alert(this.responseText);
+					}
+					else {
+						document.getElementById('graph').innerHTML = this.responseText;
+						$("#exampleModalLabel").html(name);
+						$("#launchModal").click();
+					}
+				}
+			};
+			xhttp.open("POST", "/price_graph", true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.send("name=" + name + "&link=" + link + "&source=" + source);
 		}
 		</script>
 		{% endif %}

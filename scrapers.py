@@ -87,8 +87,12 @@ class scraper(object):
 		prices = self.browser.find_elements_by_xpath('//span[@class="a-price"][@data-a-size="l"]/span[@class="a-offscreen"]')
 		images = self.browser.find_elements_by_css_selector(".s-result-item img")
 
+
+		print(len(names), len(links), len(prices), len(images))
+		minimum = min(len(names), len(links), len(prices), len(images))
 		amazon = []
-		for i in range(10):
+
+		for i in range(min(10,minimum)):
 			amazon.append({
 						"name": names[i].get_attribute("innerHTML"),
 						"price": float(html2text.html2text(''.join(prices[i].get_attribute("innerHTML").split(',')))[1:]),
@@ -113,7 +117,7 @@ class scraper(object):
 		images = self.browser.find_elements_by_css_selector('div._3nWP')
 
 		paytmMall = []
-		for i in range(10):
+		for i in range(min(10, len(items))):
 			try:
 				paytmMall.append({
 						"name": items[i].get_attribute("innerHTML"),
@@ -138,7 +142,7 @@ class scraper(object):
 		images = self.browser.find_elements_by_css_selector('.product-image')
 
 		snapdeal = []
-		for i in range(8):
+		for i in range(min(8, len(items))):
 			try:
 				snapdeal.append({
 						"name": items[i].get_attribute("title"),

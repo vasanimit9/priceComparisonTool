@@ -8,12 +8,21 @@ from credentials import login_, password_
 import time
 from category import categories as cats
 import hashlib
+from history import get_history, build_plot
 
 db = TinyDB('database.json')
 initial_time = db.search(where('initial_time'))[0]['initial_time']
 mailer1 = Mailer(login_, password_)
 def secure_hash(string):
 	return hashlib.sha512(string.encode()).hexdigest()
+
+def start_recording(product_name, product_link, source):
+	db2 = TinyDB('currently_recording.json')
+	print("product_link: %s"%product_link)
+	if db2.insert({'name':product_name, 'link':product_link, 'source':source}):
+		return 'Price graph and predictions currently unavailable for this product.'
+	else:
+		return 'Something went wrong.'
 
 @app.route('/')
 @app.route('/index')
@@ -196,8 +205,23 @@ def categories():
 		return render_template('categories.html', title = "categories", categories = cats,
 		 msgs = request.args.get('msgs'))
 
-@app.route('/start_recording', methods = ['get', 'post'])
-def start_recording():
-	product_name = request.form.get('name')
-	product_link = request.form.get('link')
+@app.route('/price_graph', methods = ['get', 'post'])
+def price_graph():
+	link = request.form.get('link')
+	print("link in price_graph: %s"%link)
+	name = request.form.get('name')
+	source = request.form.get('source')
+	history = get_history(link)
+	if not history:
+		return start_recording(name, link, source)
+	else:
+		times = []
+		prices = []
+		for i in history:
+			times.append(i['time'])
+			prices.append(i['price'])
+		image = build_plot(times, prices)
+		return "<image src = '%s'>"%image
+
+
 
