@@ -58,7 +58,7 @@ def register():
 		db.insert({"type": "user", "email": email,
 		 "password_hash": secure_hash(temp_password)})
 		mailer1.sendRegistrationMail(email, temp_password)
-		return redirect('/sign_up?msgs=Check email for password')
+		return redirect('/login?msgs=Check email for password')
 	else:
 		return redirect('/sign_up?msgs=Email already taken')
 	return redirect('/index')

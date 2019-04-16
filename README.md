@@ -29,7 +29,7 @@ password_ = 'your_password'
 secret_key = "your_secret_key"
 ```
 
-### Run the flask app
+### Run The Flask App
 Enter your virual environment (by <code>source venv/bin/activate</code>) if you're not already in it and run the following command
 
 ```zsh
