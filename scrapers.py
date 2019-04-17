@@ -182,7 +182,7 @@ def extractPrice(store, link):
 			price = browser.find_element_by_css_selector("#priceblock_ourprice").text
 		except:
 			if len(price)==0:
-				price = browser.find_element_by_css_selector(".a-declarative .a-section .a-color-price").text
+				price = browser.find_element_by_css_selector(".a-color-price").text
 		print(price[1:])
 	elif store == "PayTM Mall":
 		price = browser.find_element_by_css_selector("span._1V3w").text

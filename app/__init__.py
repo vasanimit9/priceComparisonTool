@@ -51,7 +51,7 @@ def background_jobs():
 				print('Initializing mailer')
 				mailer2.sendMail(i['email'], "Notification",
 				 '''<h3><a href="%s">%s</a></h3><br>The price at this moment is &#8377;%s<br>%s'''%(i['link'],i['name'], str(output), img))
-		time.sleep(600)
+		time.sleep(60)
 
 def background_jobs2():
 	while True:
@@ -64,11 +64,11 @@ def background_jobs2():
 		for i in products:
 			price = extractPrice(i['source'], i['link'])
 			db2.insert({"name": i["name"], "source": i["source"], "link": i["link"], "price": price, "time": time_diff})
-		time.sleep(30)
+		time.sleep(60)
 
 t1 = threading.Thread(target = background_jobs, daemon = True)
 t1.start()
 t2 = threading.Thread(target = background_jobs2, daemon = True)
 t2.start()
 
-from app import routes
+from app import routes	
