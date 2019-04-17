@@ -53,7 +53,7 @@ def background_jobs2():
 		for i in products:
 			price = extractPrice(i['source'], i['link'])
 			db2.insert({"name": i["name"], "source": i["source"], "link": i["link"], "price": price, "time": time_diff})
-		time.sleep(3600)
+		time.sleep(60)
 
 t1 = threading.Thread(target = background_jobs)
 t1.start()
