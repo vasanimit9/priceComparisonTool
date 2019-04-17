@@ -182,9 +182,14 @@ def extractPrice(store, link):
 	price = None
 	if store == "Amazon.in":
 		try:
-			price = browser.find_element_by_css_selector(".a-size-medium.a-color-price").text
+			price = browser.find_element_by_css_selector("#priceblock_ourprice").text
 		except:
-			price = browser.find_element_by_css_selector(".offer-price").text
+			price = browser.find_element_by_css_selector(".a-declarative .a-section .a-color-price").text
+		for i in price.split():
+			try:
+				price = float(price)
+			except:
+				continue
 	elif store == "PayTM Mall":
 		price = browser.find_element_by_css_selector("span._1V3w").text
 	elif store == "SnapDeal":

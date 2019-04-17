@@ -24,8 +24,10 @@ def convertLinks(source, link):
 				break
 
 		link = "https://www.flipkart.com/p/p/p?" + pid
+		link = '\\/'.join(link.split('/'))
 	elif source == "SnapDeal":
 		link = link.split('#')[0]
 
-	link = '\\/'.join(link.split('/'))
+
+	print(link)
 	return link

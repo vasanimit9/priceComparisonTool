@@ -55,9 +55,9 @@ def background_jobs2():
 			db2.insert({"name": i["name"], "source": i["source"], "link": i["link"], "price": price, "time": time_diff})
 		time.sleep(30)
 
-t1 = threading.Thread(target = background_jobs)
+t1 = threading.Thread(target = background_jobs, daemon = True)
 t1.start()
-t2 = threading.Thread(target = background_jobs2)
+t2 = threading.Thread(target = background_jobs2, daemon = True)
 t2.start()
 
 from app import routes
