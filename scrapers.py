@@ -52,9 +52,6 @@ class scraper(object):
 		for i in range(len(prices)):
 			price.append(prices[i].text)
 			price[i]=price[i][1:]
-			#print(price[i]);
-			#img_src=find(links[i].get_attribute("href"));
-			#img.append(img_src);
 		minimum = min(len(names), len(links), len(prices), len(images))
 		flipkart=[];
 		for i in range(min(10, minimum)):
@@ -179,17 +176,14 @@ def extractPrice(store, link):
 	options.headless = True
 	browser = webdriver.Firefox(options = options)
 	browser.get(link)
-	price = None
+	price = []
 	if store == "Amazon.in":
 		try:
 			price = browser.find_element_by_css_selector("#priceblock_ourprice").text
 		except:
-			price = browser.find_element_by_css_selector(".a-declarative .a-section .a-color-price").text
-		for i in price.split():
-			try:
-				price = float(i)
-			except:
-				continue
+			if len(price)==0:
+				price = browser.find_element_by_css_selector(".a-declarative .a-section .a-color-price").text
+		print(price[1:])
 	elif store == "PayTM Mall":
 		price = browser.find_element_by_css_selector("span._1V3w").text
 	elif store == "SnapDeal":

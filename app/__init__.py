@@ -8,6 +8,7 @@ from mailer import Mailer
 from credentials import login_, password_, secret_key
 import threading
 import calendar
+from history import get_history, build_plot
 
 db = TinyDB('database.json')
 db2 = TinyDB('history.json')
@@ -37,9 +38,19 @@ def background_jobs():
 				print(i)
 				print('Sending notifications')
 				output = extractPrice(i['source'], i['link'])
+				history = get_history(i['link'])
+				img = ''
+				if history:
+					times = []
+					prices = []
+					for i in history:
+						times.append(i['time'])
+						prices.append(i['price'])		
+						image = build_plot(times, prices)
+						img = "<image src = '%s'>"%image
 				print('Initializing mailer')
 				mailer2.sendMail(i['email'], "Notification",
-				 '''<h3><a href="%s">%s</a></h3><br>The price at this moment is &#8377;%s'''%(i['link'],i['name'], str(output)))
+				 '''<h3><a href="%s">%s</a></h3><br>The price at this moment is &#8377;%s<br>%s'''%(i['link'],i['name'], str(output), img))
 		time.sleep(600)
 
 def background_jobs2():
