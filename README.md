@@ -2,7 +2,7 @@
 ## For Software Engineering Project
 
 ### Setting Up The Virtual Environment
-If you don't have the <code>virualenv</code> python package, you can install it by
+If you don't have the <code>virtualenv</code> python package, you can install it by
 
 ```zsh
 pip install virtualenv --user
@@ -11,7 +11,7 @@ pip install virtualenv --user
 If you the package installed, go to the root folder of the app, and run the following commands on bash
 
 ```zsh
-virutalenv -p python3 venv
+virtualenv -p python3 venv
 source venv/bin/activate
 ```
 
