@@ -11,7 +11,7 @@ import hashlib
 from history import get_history, build_plot
 
 db = TinyDB('database.json')
-db2 = TinyDB('currently_recording.json')
+db2 = TinyDB('history.json')
 initial_time = db2.search(where('initial_time'))[0]['initial_time']
 mailer1 = Mailer(login_, password_)
 def secure_hash(string):
