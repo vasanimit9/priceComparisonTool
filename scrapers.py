@@ -37,14 +37,14 @@ class scraper(object):
 			names = self.browser.find_elements_by_css_selector("._3liAhj ._2cLu-l")
 			links = self.browser.find_elements_by_css_selector("._3liAhj .Zhf2z-")
 			prices = self.browser.find_elements_by_css_selector("._3liAhj ._1vC4OE")
-			images= self.browser.find_elements_by_css_selector("._1Nyybr._30XEf0")
+			images = self.browser.find_elements_by_css_selector("._1Nyybr._30XEf0")
 			flag=1
 
 		if(len(names)==0):
 			names = self.browser.find_elements_by_css_selector("._2mylT6")
 			links = self.browser.find_elements_by_css_selector("._3dqZjq")
 			prices = self.browser.find_elements_by_css_selector("._3O0U0u ._1vC4OE")
-			images=self.browser.find_elements_by_css_selector("._3togXc")
+			images = self.browser.find_elements_by_css_selector("._3togXc")
 			flag=0
 		price=[];
 		
@@ -54,9 +54,9 @@ class scraper(object):
 			#print(price[i]);
 			#img_src=find(links[i].get_attribute("href"));
 			#img.append(img_src);
-			
+		minimum = min(len(names), len(links), len(prices), len(images))
 		flipkart=[];
-		for i in range(min(10,len(images))):
+		for i in range(min(10, minimum)):
 			if(flag==0):
 				flipkart.append({
 						"name": names[i].text,
@@ -116,8 +116,10 @@ class scraper(object):
 		links = self.browser.find_elements_by_css_selector('div._3WhJ')
 		images = self.browser.find_elements_by_css_selector('div._3nWP')
 
+		minimum = min(len(items), len(prices), len(links), lrn(images))
+
 		paytmMall = []
-		for i in range(min(10, len(items))):
+		for i in range(min(10, minimum)):
 			try:
 				paytmMall.append({
 						"name": items[i].get_attribute("innerHTML"),
@@ -142,7 +144,8 @@ class scraper(object):
 		images = self.browser.find_elements_by_css_selector('.product-image')
 
 		snapdeal = []
-		for i in range(min(8, len(items))):
+		minimum = min(len(items), len(prices), len(links), lrn(images))
+		for i in range(min(8, minimum)):
 			try:
 				snapdeal.append({
 						"name": items[i].get_attribute("title"),

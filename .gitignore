@@ -1,6 +1,8 @@
 database.json
 credentials.py
 geckodriver.log
+currently_recording.json
+history.json
 venv
 __pycache__
 app/__pycache__
