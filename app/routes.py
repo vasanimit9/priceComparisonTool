@@ -19,6 +19,8 @@ def secure_hash(string):
 
 def start_recording(product_name, product_link, source):
 	db2 = TinyDB('currently_recording.json')
+	if db2.contains(where('link') == product_link):
+		return 'Price graph and predictions currently unavailable for this product.'
 	print("product_link: %s"%product_link)
 	if db2.insert({'name':product_name, 'link':product_link, 'source':source}):
 		return 'Price graph and predictions currently unavailable for this product.'
@@ -62,6 +64,7 @@ def sign_up():
 @app.route('/register', methods = ['get', 'post'])
 def register():
 	# username = request.form.get('username')
+	db = TinyDB('database.json')
 	email = request.form.get('email')
 	if email != None and not db.contains(where('email')==email):
 		temp_password = str(random.random()*1000000)
@@ -87,6 +90,7 @@ def login():
 
 @app.route('/validate_login', methods = ['get', 'post'])
 def validate_login():
+	db = TinyDB('database.json')
 	email = request.form.get('email')
 	password_hash = secure_hash(request.form.get('password'))
 	if db.contains(where('email') == email):
@@ -127,6 +131,7 @@ def change_password():
 
 @app.route('/change', methods = ['post', 'get'])
 def change():
+	db = TinyDB('database.json')
 	email = request.args.get('email')
 	email = "@".join(email.split("%40"))
 	password_hash = request.args.get('h')
@@ -137,6 +142,7 @@ def change():
 
 @app.route('/forgot_password', methods = ['post', 'get'])
 def forgot_password():
+	db = TinyDB('database.json')
 	try:
 		email = session['email']
 	except:
@@ -155,6 +161,7 @@ def forgot_password():
 
 @app.route('/subscribe', methods = ['post', 'get'])
 def subscribe():
+	db = TinyDB('database.json')
 	try:
 		if 'email' in session:
 			link = request.form.get('link')
@@ -176,6 +183,7 @@ def subscribe():
 
 @app.route('/profile')
 def profile():
+	db = TinyDB('database.json')
 	if 'email' in session:
 		output = db.search((where('type') == 'notification') & 
 			(where('email') == session['email']))
@@ -186,6 +194,7 @@ def profile():
 
 @app.route('/unsubscribe', methods = ['post', 'get'])
 def unsubscribe():
+	db = TinyDB('database.json')
 	if 'email' in session:
 		link = request.form.get('link')
 		t = int(request.form.get('time'))
@@ -208,6 +217,7 @@ def categories():
 
 @app.route('/price_graph', methods = ['get', 'post'])
 def price_graph():
+	db = TinyDB('database.json')
 	link = request.form.get('link')
 	print("link in price_graph: %s"%link)
 	name = request.form.get('name')

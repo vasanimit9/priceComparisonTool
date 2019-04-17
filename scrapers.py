@@ -5,6 +5,7 @@ from selenium.webdriver.firefox.options import Options
 # from selenium.webdriver.chrome.options import Options
 import html2text
 import threading
+from convertLinks import convertLinks
 
 	
 class scraper(object):
@@ -61,7 +62,7 @@ class scraper(object):
 				flipkart.append({
 						"name": names[i].text,
 						"price": float(html2text.html2text(''.join(price[i].split(',')))),
-						"link": links[i].get_attribute('href'),
+						"link": convertLinks("Flipkart", links[i].get_attribute('href')),
 						"image": images[i].get_attribute("src"),
 						"source": "Flipkart"})
 			elif(flag==1):
@@ -93,10 +94,11 @@ class scraper(object):
 		amazon = []
 
 		for i in range(min(10,minimum)):
+			print(links[i].get_attribute('href'))
 			amazon.append({
 						"name": names[i].get_attribute("innerHTML"),
 						"price": float(html2text.html2text(''.join(prices[i].get_attribute("innerHTML").split(',')))[1:]),
-						"link": links[i].get_attribute('href'),
+						"link": convertLinks("Amazon.in", links[i].get_attribute('href')),
 						"image": images[i].get_attribute('src'),
 						"source": "Amazon.in"})
 			
@@ -124,7 +126,7 @@ class scraper(object):
 				paytmMall.append({
 						"name": items[i].get_attribute("innerHTML"),
 						"price": float(html2text.html2text(''.join(prices[i].text.split(',')))),
-						"link": links[i].find_element_by_tag_name('a').get_attribute('href'),
+						"link": convertLinks('PayTM Mall', links[i].find_element_by_tag_name('a').get_attribute('href')),
 						"image": images[i].find_element_by_tag_name('img').get_attribute('src'),
 						"source": "PayTM Mall"})
 			except:
@@ -150,7 +152,7 @@ class scraper(object):
 				snapdeal.append({
 						"name": items[i].get_attribute("title"),
 						"price": float(html2text.html2text(''.join(prices[i].get_attribute("display-price").split(',')))),
-						"link": links[2*i].get_attribute('href'),
+						"link": convertLinks('SnapDeal', links[2*i].get_attribute('href'))	,
 						"image": images[2*i + 1].get_attribute('src'),
 						"source": "SnapDeal"})
 			except:
