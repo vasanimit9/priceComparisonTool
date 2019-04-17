@@ -116,7 +116,7 @@ class scraper(object):
 		links = self.browser.find_elements_by_css_selector('div._3WhJ')
 		images = self.browser.find_elements_by_css_selector('div._3nWP')
 
-		minimum = min(len(items), len(prices), len(links), lrn(images))
+		minimum = min(len(items), len(prices), len(links), len(images))
 
 		paytmMall = []
 		for i in range(min(10, minimum)):
@@ -144,7 +144,7 @@ class scraper(object):
 		images = self.browser.find_elements_by_css_selector('.product-image')
 
 		snapdeal = []
-		minimum = min(len(items), len(prices), len(links), lrn(images))
+		minimum = min(len(items), len(prices), len(links), len(images))
 		for i in range(min(8, minimum)):
 			try:
 				snapdeal.append({

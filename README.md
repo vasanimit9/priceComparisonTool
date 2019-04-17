@@ -1,4 +1,4 @@
-# Price Compaison Tool
+# Price Comparison Tool
 ## For Software Engineering Project
 
 ### Setting Up The Virtual Environment
