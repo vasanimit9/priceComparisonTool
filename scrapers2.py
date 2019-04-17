@@ -13,39 +13,48 @@ class scraper(object):
 		self.productName = re.sub(r"[,.;@#?!&$()-]+\ *", " ", productName)
 		self.options = Options()
 		self.options.headless = True
-		self.browser = webdriver.Firefox(options = self.options)
+		browser = webdriver.Firefox(options = self.options)
 		self.products = []
-		self.amazon = self.amazonScraper()
-		self.paytmMall = self.paytmMallScraper()
-		self.snapdeal = self.snapdealScraper()
-		self.flipkart = self.flipkartScraper()
+		t1 = threading.Thread(target = scraper.amazonScraper, args = (self, ))
+		t2 = threading.Thread(target = scraper.paytmMallScraper, args = (self, ))
+		t3 = threading.Thread(target = scraper.snapdealScraper, args = (self, ))
+		t4 = threading.Thread(target = scraper.flipkartScraper, args = (self, ))
+		t1.start()
+		t2.start()
+		t3.start()
+		t4.start()
+		t1.join()
+		t2.join()
+		t3.join()
+		t4.join()
 		self.products = self.flipkart + self.amazon + self.paytmMall + self.snapdeal 
 		self.sortByPriceAscending()
 		print("Scraper initialized and prices fetched")
 
 	def flipkartScraper(self):
+		browser = webdriver.Firefox(options = self.options)
 		self.flipkartURL = "https://www.flipkart.com/search?q="
 		self.flipkartURL += '+'.join(self.productName.split())
 
 		print("Searching URL:", self.flipkartURL)
-		self.browser.get(self.flipkartURL)
+		browser.get(self.flipkartURL)
 		flag=0
-		names = self.browser.find_elements_by_css_selector("._3wU53n")
-		links = self.browser.find_elements_by_css_selector("._31qSD5")
-		prices = self.browser.find_elements_by_css_selector("._2rQ-NK")
-		images= self.browser.find_elements_by_css_selector("._1Nyybr._30XEf0")
+		names = browser.find_elements_by_css_selector("._3wU53n")
+		links = browser.find_elements_by_css_selector("._31qSD5")
+		prices = browser.find_elements_by_css_selector("._2rQ-NK")
+		images= browser.find_elements_by_css_selector("._1Nyybr._30XEf0")
 		if(len(names)==0):
-			names = self.browser.find_elements_by_css_selector("._3liAhj ._2cLu-l")
-			links = self.browser.find_elements_by_css_selector("._3liAhj .Zhf2z-")
-			prices = self.browser.find_elements_by_css_selector("._3liAhj ._1vC4OE")
-			images = self.browser.find_elements_by_css_selector("._1Nyybr._30XEf0")
+			names = browser.find_elements_by_css_selector("._3liAhj ._2cLu-l")
+			links = browser.find_elements_by_css_selector("._3liAhj .Zhf2z-")
+			prices = browser.find_elements_by_css_selector("._3liAhj ._1vC4OE")
+			images = browser.find_elements_by_css_selector("._1Nyybr._30XEf0")
 			flag=1
 
 		if(len(names)==0):
-			names = self.browser.find_elements_by_css_selector("._2mylT6")
-			links = self.browser.find_elements_by_css_selector("._3dqZjq")
-			prices = self.browser.find_elements_by_css_selector("._3O0U0u ._1vC4OE")
-			images = self.browser.find_elements_by_css_selector("._3togXc")
+			names = browser.find_elements_by_css_selector("._2mylT6")
+			links = browser.find_elements_by_css_selector("._3dqZjq")
+			prices = browser.find_elements_by_css_selector("._3O0U0u ._1vC4OE")
+			images = browser.find_elements_by_css_selector("._3togXc")
 			flag=0
 		price=[];
 		
@@ -73,20 +82,21 @@ class scraper(object):
 						"image": images[i].get_attribute("src"),
 						"source": "Flipkart"})
 				
-			
-		return flipkart
+		self.flipkart = flipkart
+		browser.quit()
 
 	def amazonScraper(self):
+		browser = webdriver.Firefox(options = self.options)
 		self.amazonURL = "https://amazon.in/s/?field-keywords="
 		self.amazonURL += '+'.join(self.productName.split())
 
 		print("Searching URL:", self.amazonURL)
-		self.browser.get(self.amazonURL)
+		browser.get(self.amazonURL)
 
-		names = self.browser.find_elements_by_css_selector(".s-result-item h5 a span")
-		links = self.browser.find_elements_by_css_selector(".s-result-item h5 a")
-		prices = self.browser.find_elements_by_xpath('//span[@class="a-price"][@data-a-size="l"]/span[@class="a-offscreen"]')
-		images = self.browser.find_elements_by_css_selector(".s-result-item img")
+		names = browser.find_elements_by_css_selector(".s-result-item h5 a span")
+		links = browser.find_elements_by_css_selector(".s-result-item h5 a")
+		prices = browser.find_elements_by_xpath('//span[@class="a-price"][@data-a-size="l"]/span[@class="a-offscreen"]')
+		images = browser.find_elements_by_css_selector(".s-result-item img")
 
 
 		print(len(names), len(links), len(prices), len(images))
@@ -101,22 +111,23 @@ class scraper(object):
 						"link": convertLinks("Amazon.in", links[i].get_attribute('href')),
 						"image": images[i].get_attribute('src'),
 						"source": "Amazon.in"})
-			
-		return amazon
+		browser.quit()
+		self.amazon = amazon
 	
 
 	def paytmMallScraper(self):
+		browser = webdriver.Firefox(options = self.options)
 		self.paytmMallURL = "https://paytmmall.com/shop/search?q="
 		self.paytmMallURL += ' '.join(self.productName.split())
 		self.paytmMallURL += '&from=organic'
 
 		print("Searching URL:", self.paytmMallURL)
-		self.browser.get(self.paytmMallURL)
+		browser.get(self.paytmMallURL)
 
-		items = self.browser.find_elements_by_css_selector('div._2apC')
-		prices = self.browser.find_elements_by_css_selector('div._1kMS span')
-		links = self.browser.find_elements_by_css_selector('div._3WhJ')
-		images = self.browser.find_elements_by_css_selector('div._3nWP')
+		items = browser.find_elements_by_css_selector('div._2apC')
+		prices = browser.find_elements_by_css_selector('div._1kMS span')
+		links = browser.find_elements_by_css_selector('div._3WhJ')
+		images = browser.find_elements_by_css_selector('div._3nWP')
 
 		minimum = min(len(items), len(prices), len(links), len(images))
 
@@ -131,19 +142,21 @@ class scraper(object):
 						"source": "PayTM Mall"})
 			except:
 				continue
-		return paytmMall
+		browser.quit()
+		self.paytmMall = paytmMall
 
 	def snapdealScraper(self):
+		browser = webdriver.Firefox(options = self.options)
 		self.snapdealURL = "https://snapdeal.com/search?keyword="
 		self.snapdealURL += '+'.join(self.productName.split())
 
 		print("Searching URL:", self.snapdealURL)
-		self.browser.get(self.snapdealURL)
+		browser.get(self.snapdealURL)
 
-		items = self.browser.find_elements_by_css_selector('.product-title')
-		prices = self.browser.find_elements_by_css_selector('.product-price')
-		links = self.browser.find_elements_by_css_selector('.dp-widget-link.noUdLine.hashAdded')
-		images = self.browser.find_elements_by_css_selector('.product-image')
+		items = browser.find_elements_by_css_selector('.product-title')
+		prices = browser.find_elements_by_css_selector('.product-price')
+		links = browser.find_elements_by_css_selector('.dp-widget-link.noUdLine.hashAdded')
+		images = browser.find_elements_by_css_selector('.product-image')
 
 		snapdeal = []
 		minimum = min(len(items), len(prices), len(links), len(images))
@@ -158,7 +171,8 @@ class scraper(object):
 			except:
 				continue
 		
-		return snapdeal
+		browser.quit()
+		self.snapdeal = snapdeal
 
 	def sortByPriceAscending(self):
 		for i in range(0,len(self.products)-1, 1):
@@ -168,10 +182,6 @@ class scraper(object):
 
 	def __repr__(self):
 		return str(self.products)
-
-	def __del__(self):
-		print("Scraper object destroyed")
-		self.browser.quit()
 
 
 def extractPrice(store, link):
