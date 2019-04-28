@@ -15,7 +15,7 @@ virtualenv -p python3 venv
 source venv/bin/activate
 ```
 
-Now, you're in your virual environment. Next run
+Now, you're in your virtual environment. Next run
 
 ```zsh
 pip install -r requirements.txt
